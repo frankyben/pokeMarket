@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>PokéMarket</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark text-white">
+
+<div class="container py-4">
+
+    <h1 class="text-center mb-4">PokéMarket</h1>
+
+    <!-- BUSCADOR -->
+    <form action="/buscar" method="get" class="mb-4">
+        <input type="text" name="query" class="form-control" placeholder="Buscar Pokémon...">
+    </form>
+
+    <!-- MENSAJE -->
+    <div th:if="${mensaje}" class="alert alert-warning text-center">
+        <span th:text="${mensaje}"></span>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="text-end mb-3">
+        <a href="/admin" class="btn btn-warning">Admin</a>
+    </div>
+
+    <div class="row">
+
+        <!-- INVENTARIO -->
+        <div class="col-md-9">
+            <div class="row">
+
+                <div th:if="${#lists.isEmpty(variantes)}" class="text-center">
+                    <h3>No hay inventario disponible</h3>
+                </div>
+
+                <div class="col-md-4 mb-4" th:each="p : ${variantes}">
+                    <div class="card text-dark">
+
+                        <!-- 🔥 GENERACIÓN CORRECTA DEL NOMBRE -->
+                        <div th:with="
+                            nombre=${#strings.toLowerCase(p.pokemon.nombre)},
+                            forma=${p.forma.name()},
+                            formaTexto=${forma != 'NORMAL' ? #strings.capitalize(#strings.toLowerCase(forma)) : ''},
+                            shinyTexto=${p.shiny ? 'Shiny' : ''},
+                            archivo=${nombre + formaTexto + shinyTexto + '.png'}
+                        ">
+
+                            <img th:src="@{'/images/' + ${archivo}}"
+                                 onerror="this.src='/images/default.png'"
+                                 class="card-img-top"
+                                 style="height:200px; object-fit:contain;">
+                        </div>
+
+                        <div class="card-body">
+                            <h5 th:text="${p.pokemon.nombre}"></h5>
+
+                            <p>
+                                <span th:text="${p.forma}"></span><br>
+                                <span th:if="${p.shiny}">✨ Shiny</span><br>
+                                $<span th:text="${p.precio}"></span>
+                            </p>
+
+                            <!-- AGREGAR -->
+                            <button class="btn btn-primary w-100 mb-2"
+                                th:attr="data-nombre=${p.pokemon.nombre}, data-precio=${p.precio}"
+                                onclick="agregarDesdeBoton(this)">
+                                Agregar
+                            </button>
+
+                            <!-- COMPRA -->
+                            <button class="btn btn-success w-100"
+                                th:attr="data-nombre=${p.pokemon.nombre}"
+                                onclick="comprarDesdeBoton(this)">
+                                Comprar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CARRITO -->
+        <div class="col-md-3">
+            <div class="card p-3 text-dark">
+                <h4>Carrito</h4>
+                <div id="carrito-lista">
+                    <p>No hay productos en el carrito</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
