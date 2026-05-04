@@ -25,14 +25,14 @@ public class PokemonController {
     @Autowired
     private PokemonRepository pokemonRepository;
 
-    // 🏠 HOME
+
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("variantes", repository.findAll());
         return "index";
     }
 
-    // 📦 INVENTARIO ADMIN
+
     @GetMapping("/pokemon")
     public String listar(Model model) {
 
@@ -52,13 +52,13 @@ public class PokemonController {
         return "inventario";
     }
 
-    // 🔐 LOGIN VIEW
+
     @GetMapping("/admin")
     public String login() {
         return "login";
     }
 
-    // 🔐 LOGIN PROCESS
+
     @PostMapping("/login")
     public String validarLogin(@RequestParam String user, @RequestParam String pass) {
 
@@ -69,7 +69,7 @@ public class PokemonController {
         return "redirect:/admin";
     }
 
-    // ➕ GUARDAR VARIANTE
+  
     @PostMapping("/pokemon/guardar")
     public String guardar(@ModelAttribute PokemonVariante variante) {
 
@@ -95,7 +95,7 @@ public class PokemonController {
         return "redirect:/pokemon";
     }
 
-    // ✏️ EDITAR STOCK MANUAL
+
     @PostMapping("/pokemon/editarStock")
     public String editarStock(@RequestParam Long id, @RequestParam Integer stock) {
 
@@ -109,14 +109,14 @@ public class PokemonController {
         return "redirect:/pokemon";
     }
 
-    // ❌ ELIMINAR
+
     @GetMapping("/pokemon/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
         repository.deleteById(id);
         return "redirect:/pokemon";
     }
 
-    // 🔍 BUSCAR (CON FALLBACK)
+
     @GetMapping("/buscar")
     public String buscar(@RequestParam String query, Model model) {
 
@@ -127,7 +127,7 @@ public class PokemonController {
                 )
                 .toList();
 
-        // 🔥 SI NO ENCUENTRA → REGRESA TODO
+
         if (lista.isEmpty()) {
             model.addAttribute("variantes", repository.findAll());
             model.addAttribute("mensaje", "No se encontró el Pokémon, mostrando todo el inventario");
