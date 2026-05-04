@@ -1,4 +1,8 @@
-let carrito = [];
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+function guardarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
 
 function agregarDesdeBoton(btn) {
 
@@ -33,11 +37,20 @@ function agregarDesdeBoton(btn) {
         });
     }
 
+    guardarCarrito();
     renderCarrito();
+}
+
+function comprarDesdeBoton(btn) {
+    const nombre = btn.getAttribute("data-nombre");
+    const telefono = "5215528438110";
+    const mensaje = encodeURIComponent("Hola, quiero comprar: " + nombre);
+    window.open(`https://wa.me/${telefono}?text=${mensaje}`, "_blank");
 }
 
 function eliminarDelCarrito(index) {
     carrito.splice(index, 1);
+    guardarCarrito();
     renderCarrito();
 }
 
@@ -80,5 +93,21 @@ function renderCarrito() {
     lista.innerHTML += `
         <hr>
         <strong>Total: $${total}</strong>
+        <br><br>
+        <button class="btn btn-success w-100" onclick="enviarWhats()">Comprar todo</button>
     `;
 }
+
+function enviarWhats() {
+
+    let mensaje = "Hola, quiero comprar:%0A";
+
+    carrito.forEach(p => {
+        mensaje += `- ${p.nombre} x${p.cantidad}%0A`;
+    });
+
+    const telefono = "5215528438110";
+    window.open(`https://wa.me/${telefono}?text=${mensaje}`, "_blank");
+}
+
+renderCarrito();
