@@ -1,33 +1,43 @@
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-function guardarCarrito() {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-}
+let carrito = [];
 
 function agregarDesdeBoton(btn) {
-    const nombre = btn.getAttribute("data-nombre");
-    const precio = parseFloat(btn.getAttribute("data-precio"));
 
-    let existente = carrito.find(p => p.nombre === nombre);
+    const key = btn.getAttribute("data-key");
+    const nombreBase = btn.getAttribute("data-nombre");
+    const precio = parseFloat(btn.getAttribute("data-precio"));
+    const forma = btn.getAttribute("data-forma");
+    const shiny = btn.getAttribute("data-shiny") === "true";
+    const imagen = btn.getAttribute("data-imagen");
+
+    let nombre = nombreBase;
+
+    if (forma !== "NORMAL") {
+        nombre += " " + forma;
+    }
+
+    if (shiny) {
+        nombre += " ✨";
+    }
+
+    let existente = carrito.find(p => p.key === key);
 
     if (existente) {
         existente.cantidad++;
     } else {
         carrito.push({
-            nombre,
-            precio,
+            key: key,
+            nombre: nombre,
+            precio: precio,
             cantidad: 1,
-            imagen: nombre.toLowerCase() + ".png"
+            imagen: imagen
         });
     }
 
-    guardarCarrito();
     renderCarrito();
 }
 
 function eliminarDelCarrito(index) {
     carrito.splice(index, 1);
-    guardarCarrito();
     renderCarrito();
 }
 
@@ -54,7 +64,7 @@ function renderCarrito() {
         div.innerHTML = `
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
-                    <img src="/images/${item.imagen}" width="40" height="40">
+                    <img src="/images/${item.imagen}" width="40">
                     <div>
                         <div>${item.nombre}</div>
                         <small>$${item.precio} x ${item.cantidad}</small>
@@ -70,21 +80,5 @@ function renderCarrito() {
     lista.innerHTML += `
         <hr>
         <strong>Total: $${total}</strong>
-        <br><br>
-        <button class="btn btn-success w-100" onclick="enviarWhats()">Comprar todo</button>
     `;
 }
-
-function enviarWhats() {
-
-    let mensaje = "Hola, quiero comprar:%0A";
-
-    carrito.forEach(p => {
-        mensaje += `- ${p.nombre} x${p.cantidad}%0A`;
-    });
-
-    const telefono = "5215528438110";
-    window.open(`https://wa.me/${telefono}?text=${mensaje}`);
-}
-
-renderCarrito();

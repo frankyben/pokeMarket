@@ -45,31 +45,40 @@
                         ">
 
                             <img th:src="@{'/images/' + ${archivo}}"
-                                 onerror="this.src='/images/default.png'"
                                  class="card-img-top"
                                  style="height:200px; object-fit:contain;">
-                        </div>
 
-                        <div class="card-body">
-                            <h5 th:text="${p.pokemon.nombre}"></h5>
+                            <div class="card-body">
+                                <h5 th:text="${p.pokemon.nombre}"></h5>
 
-                            <p>
-                                <span th:text="${p.forma}"></span><br>
-                                <span th:if="${p.shiny}">✨ Shiny</span><br>
-                                $<span th:text="${p.precio}"></span>
-                            </p>
+                                <p>
+                                    <span th:text="${p.forma}"></span><br>
+                                    <span th:if="${p.shiny}">✨ Shiny</span><br>
+                                    $<span th:text="${p.precio}"></span>
+                                </p>
 
-                            <button class="btn btn-primary w-100 mb-2"
-                                th:attr="data-nombre=${p.pokemon.nombre}, data-precio=${p.precio}"
-                                onclick="agregarDesdeBoton(this)">
-                                Agregar
-                            </button>
+                                <button class="btn btn-primary w-100 mb-2"
+                                    th:attr="
+                                        data-key=${p.id + '-' + p.forma.name() + '-' + p.shiny},
+                                        data-id=${p.id},
+                                        data-nombre=${p.pokemon.nombre},
+                                        data-precio=${p.precio},
+                                        data-forma=${p.forma.name()},
+                                        data-shiny=${p.shiny},
+                                        data-imagen=${archivo}
+                                    "
+                                    onclick="agregarDesdeBoton(this)">
+                                    Agregar
+                                </button>
 
-                            <button class="btn btn-success w-100"
-                                th:attr="data-nombre=${p.pokemon.nombre}"
-                                onclick="comprarDesdeBoton(this)">
-                                Comprar
-                            </button>
+                                <button class="btn btn-success w-100"
+                                    th:attr="data-nombre=${p.pokemon.nombre}"
+                                    onclick="comprarDesdeBoton(this)">
+                                    Comprar
+                                </button>
+
+                            </div>
+
                         </div>
 
                     </div>
@@ -77,7 +86,6 @@
 
             </div>
         </div>
-
 
         <div class="col-md-3">
             <div class="card p-3 text-dark">
